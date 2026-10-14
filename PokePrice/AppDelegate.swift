@@ -2,35 +2,89 @@
 //  AppDelegate.swift
 //  PokePrice
 //
-//  Created by Bruno Luiz Michelotti Poncio on 10/09/26.
+//  Created by Bruno on 23/08/26.
 //
 
 import UIKit
+import FirebaseCore
+import FirebaseAnalytics
+import FirebaseCrashlytics
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // Configure Firebase
+        FirebaseApp.configure()
+        
+        // Initialize Crashlytics
+        setupCrashlytics()
+        
+        // Set up analytics
+        setupAnalytics()
+        
+        // Log app launch
+        AnalyticsManager.shared.logScreenView(screenName: "app_launch")
+        
         return true
+    }
+    
+    private func setupCrashlytics() {
+        // Enable Crashlytics collection
+        Crashlytics.crashlytics().setCrashlyticsCollectionEnabled(true)
+        
+        // Set up crash reporting for debugging
+        #if DEBUG
+        Crashlytics.crashlytics().setCrashlyticsCollectionEnabled(false)
+        #else
+        Crashlytics.crashlytics().setCrashlyticsCollectionEnabled(true)
+        #endif
+        
+        // Log app version and build
+        if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
+           let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
+            Crashlytics.crashlytics().setCustomValue(appVersion, forKey: "app_version")
+            Crashlytics.crashlytics().setCustomValue(buildNumber, forKey: "build_number")
+        }
+        
+        // Log device info
+        let deviceModel = UIDevice.current.model
+        let systemVersion = UIDevice.current.systemVersion
+        Crashlytics.crashlytics().setCustomValue(deviceModel, forKey: "device_model")
+        Crashlytics.crashlytics().setCustomValue(systemVersion, forKey: "system_version")
+    }
+    
+    private func setupAnalytics() {
+        // Set default analytics parameters
+        Analytics.setDefaultEventParameters([
+            "app_name": "PokePrice",
+            "app_version": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
+        ])
+        
+        // Enable analytics collection
+        Analytics.setAnalyticsCollectionEnabled(true)
     }
 
     // MARK: UISceneSession Lifecycle
 
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        // Called when a new scene session is being created.
-        // Use this method to select a configuration to create the new scene with.
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
     }
 
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-        // Called when the user discards a scene session.
-        // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
-        // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
-
-
+    
+    // MARK: Lifecycle
+    
+    func applicationWillResignActive(_ application: UIApplication) {
+        AnalyticsManager.shared.logScreenView(screenName: "app_background")
+    }
+    
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        AnalyticsManager.shared.logScreenView(screenName: "app_foreground")
+    }
+    
+    func applicationWillTerminate(_ application: UIApplication) {
+        AnalyticsManager.shared.logScreenView(screenName: "app_terminate")
+    }
 }
-

@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		15A7239130536B4900F5066E /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 15A7239030536B4900F5066E /* Alamofire */; };
+		15A7239530536BCD00F5066E /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 15A7239630536BCD00F5066E /* FirebaseAnalytics */; };
+		15A7239730536BCE00F5066E /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 15A7239830536BCE00F5066E /* FirebaseCrashlytics */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		15A7233B305368FA00F5066E /* PokePrice.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PokePrice.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +42,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				15A7239130536B4900F5066E /* Alamofire in Frameworks */,
+				15A7239530536BCD00F5066E /* FirebaseAnalytics in Frameworks */,
+				15A7239730536BCE00F5066E /* FirebaseCrashlytics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,6 +77,7 @@
 				15A72337305368FA00F5066E /* Sources */,
 				15A72338305368FA00F5066E /* Frameworks */,
 				15A72339305368FA00F5066E /* Resources */,
+				15A7239B30536BD000F5066E /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -78,6 +88,9 @@
 			);
 			name = PokePrice;
 			packageProductDependencies = (
+				15A7239030536B4900F5066E /* Alamofire */,
+				15A7239630536BCD00F5066E /* FirebaseAnalytics */,
+				15A7239830536BCE00F5066E /* FirebaseCrashlytics */,
 			);
 			productName = PokePrice;
 			productReference = 15A7233B305368FA00F5066E /* PokePrice.app */;
@@ -107,6 +120,10 @@
 			);
 			mainGroup = 15A72332305368FA00F5066E;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				15A7238F30536B4900F5066E /* XCRemoteSwiftPackageReference "Alamofire" */,
+				15A7239430536BCB00F5066E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 15A7233C305368FA00F5066E /* Products */;
 			projectDirPath = "";
@@ -127,6 +144,26 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		15A7239B30536BD000F5066E /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Copy GoogleService-Info.plist to app bundle\ncp \"${SRCROOT}/PokePrice/GoogleService-Info.plist\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/GoogleService-Info.plist\"\n\n# Only run Crashlytics upload for Release builds\nif [ \"${CONFIGURATION}\" == \"Release\" ]; then\n  ${BUILD_DIR%Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		15A72337305368FA00F5066E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -145,6 +182,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = Z8WPXXAYUF;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PokePrice/Info.plist;
@@ -153,6 +191,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -177,6 +216,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = Z8WPXXAYUF;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PokePrice/Info.plist;
@@ -185,6 +225,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -345,6 +386,43 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		15A7238F30536B4900F5066E /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.12.2;
+			};
+		};
+		15A7239430536BCB00F5066E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.19.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		15A7239030536B4900F5066E /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 15A7238F30536B4900F5066E /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		15A7239630536BCD00F5066E /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 15A7239430536BCB00F5066E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		15A7239830536BCE00F5066E /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 15A7239430536BCB00F5066E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 15A72333305368FA00F5066E /* Project object */;
 }
