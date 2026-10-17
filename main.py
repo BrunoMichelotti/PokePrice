@@ -42,7 +42,7 @@ class CardIdentificationResponse(BaseModel):
     error: Optional[str] = None
 
 class PricingData(BaseModel):
-    brl_price: Optional[Dict[str, float]] = None
+    brl_price: Optional[Dict[str, Any]] = None
     usd_price: Optional[Dict[str, float]] = None
     eur_price: Optional[Dict[str, float]] = None
 
