@@ -75,6 +75,15 @@ MOCK_CARD_DATABASE = {
         "cardNumber": "58/102",
         "rarity": "Common",
         "imageUrl": "https://images.pokemontcg.io/base1/58_hires.png"
+    },
+    "gible": {
+        "id": "gible_789",
+        "name": "Gible",
+        "setName": "Brilliant Stars",
+        "setCode": "BRS",
+        "cardNumber": "121/172",
+        "rarity": "Common",
+        "imageUrl": "https://images.pokemontcg.io/brilliantstars/121_hires.png"
     }
 }
 
@@ -89,6 +98,11 @@ MOCK_PRICING_DATA = {
         "brl_price": {"avg_price": 15.00, "low_price": 8.00, "high_price": 25.00, "source": "LigaPokemon"},
         "usd_price": {"market_price": 2.50, "low_price": 1.50, "high_price": 4.00},
         "eur_price": {"trend_price": 2.30, "low_price": 1.40, "high_price": 3.80}
+    },
+    "gible_789": {
+        "brl_price": {"avg_price": 5.00, "low_price": 2.00, "high_price": 10.00, "source": "LigaPokemon"},
+        "usd_price": {"market_price": 0.80, "low_price": 0.40, "high_price": 1.50},
+        "eur_price": {"trend_price": 0.75, "low_price": 0.35, "high_price": 1.40}
     }
 }
 
