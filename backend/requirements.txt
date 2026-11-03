@@ -9,3 +9,5 @@ passlib[bcrypt]==1.7.4
 python-dotenv==1.0.0
 httpx==0.25.2
 aiofiles==23.2.1
+mcp>=2.2.0,<3.0
+apify>=1.6.0

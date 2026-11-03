@@ -12,6 +12,9 @@ import io
 from PIL import Image
 import numpy as np
 import logging
+import os
+from pokewallet_service import PokeWalletService
+from ligapokemon_service import LigaPokemonService
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -31,6 +34,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Initialize PokeWallet service
+pokewallet_service = PokeWalletService()
+
+# Initialize LigaPokemon service
+ligapokemon_service = LigaPokemonService()
 
 # Pydantic models
 class CardIdentificationRequest(BaseModel):
@@ -135,10 +144,10 @@ async def health_check():
 async def identify_card(request: CardIdentificationRequest):
     """
     Identify a Pokemon TCG card from image
-    
+
     Args:
         request: CardIdentificationRequest with base64 encoded image
-    
+
     Returns:
         CardIdentificationResponse with card information
     """
@@ -146,18 +155,32 @@ async def identify_card(request: CardIdentificationRequest):
         # Decode base64 image
         image_data = base64.b64decode(request.image)
         image = Image.open(io.BytesIO(image_data))
-        
+
         logger.info(f"Received image for identification: {image.size}")
-        
-        # TODO: Replace with actual ML model for card identification
-        # For now, return a mock response
+
+        # Try PokeWallet MCP first if enabled
+        if pokewallet_service.enabled:
+            logger.info("Attempting PokeWallet MCP identification")
+            card_info = await pokewallet_service.analyze_card(image_data)
+
+            if card_info:
+                logger.info("PokeWallet MCP identification successful")
+                return CardIdentificationResponse(
+                    success=True,
+                    card=card_info
+                )
+            else:
+                logger.warning("PokeWallet MCP identification failed, falling back to mock data")
+
+        # Fallback to mock data
+        logger.info("Using mock card database")
         card_info = MOCK_CARD_DATABASE["charizard_ex"]
-        
+
         return CardIdentificationResponse(
             success=True,
             card=card_info
         )
-        
+
     except Exception as e:
         logger.error(f"Error identifying card: {str(e)}")
         return CardIdentificationResponse(
@@ -169,24 +192,52 @@ async def identify_card(request: CardIdentificationRequest):
 async def get_pricing(card_id: str):
     """
     Get pricing information for a specific card
-    
+
     Args:
-        card_id: ID of the card
-    
+        card_id: ID or name of the card
+
     Returns:
         PricingData with pricing information in multiple currencies
     """
     try:
         logger.info(f"Fetching pricing for card: {card_id}")
-        
-        # Check if pricing data exists
+
+        # Try LigaPokemon first if enabled
+        if ligapokemon_service.enabled:
+            logger.info("Attempting LigaPokemon pricing fetch")
+            ligapokemon_prices = await ligapokemon_service.get_card_prices(card_id)
+
+            if ligapokemon_prices:
+                logger.info("LigaPokemon pricing fetch successful")
+                # Format LigaPokemon response to match PricingData model
+                brl_price_dict = {
+                    "min_price": ligapokemon_prices.get("min_price"),
+                    "avg_price": ligapokemon_prices.get("avg_price"),
+                    "max_price": ligapokemon_prices.get("max_price"),
+                    "source": ligapokemon_prices.get("source", "LigaPokemon")
+                }
+
+                # Keep USD and EUR from mock data for now
+                usd_price_dict = MOCK_PRICING_DATA.get(card_id, {}).get("usd_price", {})
+                eur_price_dict = MOCK_PRICING_DATA.get(card_id, {}).get("eur_price", {})
+
+                return PricingData(
+                    brl_price=brl_price_dict,
+                    usd_price=usd_price_dict,
+                    eur_price=eur_price_dict
+                )
+            else:
+                logger.warning("LigaPokemon pricing fetch failed, falling back to mock data")
+
+        # Fallback to mock data
+        logger.info("Using mock pricing database")
         if card_id not in MOCK_PRICING_DATA:
             raise HTTPException(status_code=404, detail="Card pricing not found")
-        
+
         pricing_data = MOCK_PRICING_DATA[card_id]
-        
+
         return PricingData(**pricing_data)
-        
+
     except HTTPException:
         raise
     except Exception as e:
