@@ -19,6 +19,13 @@ struct CardIdentificationRequest: Codable {
     let image: String
 }
 
+// Backend response for card identification
+struct BackendCardIdentificationResponse: Codable {
+    let success: Bool
+    let card: CardInfo?
+    let error: String?
+}
+
 // MARK: - Currency Conversion
 
 struct CurrencyConversionRequest: Codable {

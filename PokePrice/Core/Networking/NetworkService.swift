@@ -9,7 +9,7 @@ import Foundation
 
 protocol NetworkServiceProtocol {
     func healthCheck() async throws -> HealthResponse
-    func identifyCard(image: Data) async throws -> CardIdentificationResponse
+    func identifyCard(image: Data) async throws -> BackendCardIdentificationResponse
     func getPricing(cardId: String) async throws -> PricingData
     func convertCurrency(from: String, to: String, amount: Double) async throws -> CurrencyConversionResponse
 }
@@ -38,7 +38,7 @@ class NetworkService: NetworkServiceProtocol {
 
     // MARK: - Card Identification
 
-    func identifyCard(image: Data) async throws -> CardIdentificationResponse {
+    func identifyCard(image: Data) async throws -> BackendCardIdentificationResponse {
         let endpoint = "/api/identify"
         let base64Image = image.base64EncodedString()
         let requestBody = CardIdentificationRequest(image: base64Image)

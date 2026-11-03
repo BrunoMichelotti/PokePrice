@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Alamofire
 
 protocol CardIdentificationServiceProtocol {
     func identifyCard(imageData: Data, completion: @escaping (Result<CardIdentificationResponse, APIError>) -> Void)
@@ -14,68 +13,54 @@ protocol CardIdentificationServiceProtocol {
 }
 
 class CardIdentificationService: CardIdentificationServiceProtocol {
-    
+
     private let networkService: NetworkServiceProtocol
-    private let baseURL = "https://your-backend-url.railway.app" // Replace with your actual deployed backend URL
-    
+
     init(networkService: NetworkServiceProtocol = NetworkService.shared) {
         self.networkService = networkService
     }
-    
+
     func identifyCard(imageData: Data, completion: @escaping (Result<CardIdentificationResponse, APIError>) -> Void) {
-        let imageBase64 = imageData.base64EncodedString()
-        let url = "\(baseURL)/api/identify"
-        let parameters: Parameters = ["image": imageBase64]
-        let headers: HTTPHeaders = ["Content-Type": "application/json"]
-        
-        AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
-            .validate()
-            .responseData { response in
-                DispatchQueue.main.async {
-                    switch response.result {
-                    case .success(let data):
-                        do {
-                            let decoder = JSONDecoder()
-                            let result = try decoder.decode(CardIdentificationResponse.self, from: data)
-                            completion(.success(result))
-                        } catch {
-                            completion(.failure(.decodingError(error.localizedDescription)))
-                        }
-                    case .failure(let error):
-                        if let statusCode = response.response?.statusCode {
-                            completion(.failure(.serverError(statusCode: statusCode)))
-                        } else {
-                            completion(.failure(.networkError(error.localizedDescription)))
-                        }
-                    }
+        Task {
+            do {
+                let response = try await networkService.identifyCard(image: imageData)
+                // Convert backend response to local model
+                let localResponse = CardIdentificationResponse(
+                    success: response.success,
+                    card: response.card,
+                    error: response.error
+                )
+                await MainActor.run {
+                    completion(.success(localResponse))
+                }
+            } catch let error as NetworkError {
+                await MainActor.run {
+                    completion(.failure(.networkError(error.localizedDescription)))
+                }
+            } catch {
+                await MainActor.run {
+                    completion(.failure(.customError(error.localizedDescription)))
                 }
             }
+        }
     }
-    
+
     func getPricing(cardId: String, completion: @escaping (Result<PricingData, APIError>) -> Void) {
-        let url = "\(baseURL)/api/pricing/\(cardId)"
-        
-        AF.request(url, method: .get)
-            .validate()
-            .responseData { response in
-                DispatchQueue.main.async {
-                    switch response.result {
-                    case .success(let data):
-                        do {
-                            let decoder = JSONDecoder()
-                            let result = try decoder.decode(PricingData.self, from: data)
-                            completion(.success(result))
-                        } catch {
-                            completion(.failure(.decodingError(error.localizedDescription)))
-                        }
-                    case .failure(let error):
-                        if let statusCode = response.response?.statusCode {
-                            completion(.failure(.serverError(statusCode: statusCode)))
-                        } else {
-                            completion(.failure(.networkError(error.localizedDescription)))
-                        }
-                    }
+        Task {
+            do {
+                let pricing = try await networkService.getPricing(cardId: cardId)
+                await MainActor.run {
+                    completion(.success(pricing))
+                }
+            } catch let error as NetworkError {
+                await MainActor.run {
+                    completion(.failure(.networkError(error.localizedDescription)))
+                }
+            } catch {
+                await MainActor.run {
+                    completion(.failure(.customError(error.localizedDescription)))
                 }
             }
+        }
     }
 }

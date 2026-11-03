@@ -22,7 +22,13 @@ class CardRepository: CardRepositoryProtocol {
     }
 
     func identifyCard(imageData: Data) async throws -> CardIdentificationResponse {
-        return try await networkService.identifyCard(image: imageData)
+        let backendResponse = try await networkService.identifyCard(image: imageData)
+        // Convert backend response to local model
+        return CardIdentificationResponse(
+            success: backendResponse.success,
+            card: backendResponse.card,
+            error: backendResponse.error
+        )
     }
 
     func getPricing(cardId: String) async throws -> PricingData {

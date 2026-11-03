@@ -13,4 +13,13 @@ struct CardIdentificationResponse: Codable {
     let error: String?
     let confidence: Double?
     let imageUrl: String?
+
+    // Custom init to handle missing fields from backend
+    init(success: Bool, card: CardInfo?, error: String?, confidence: Double? = nil, imageUrl: String? = nil) {
+        self.success = success
+        self.card = card
+        self.error = error
+        self.confidence = confidence
+        self.imageUrl = imageUrl
+    }
 }
