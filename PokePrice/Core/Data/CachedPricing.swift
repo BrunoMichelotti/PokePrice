@@ -61,6 +61,10 @@ public class CachedPricing: NSManagedObject {
         self.expiresAt = Date().addingTimeInterval(expiryInterval)
     }
 
+    static func from(pricingData: PricingData, expiryInterval: TimeInterval = 24 * 60 * 60, context: NSManagedObjectContext) -> CachedPricing {
+        return CachedPricing(context: context, pricingData: pricingData, expiryInterval: expiryInterval)!
+    }
+
     func toPricingData() -> PricingData {
         return PricingData(
             cardId: cardId,

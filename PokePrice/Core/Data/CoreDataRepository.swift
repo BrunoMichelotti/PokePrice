@@ -68,7 +68,7 @@ class CoreDataRepository: CoreDataRepositoryProtocol {
                 existingCard.expiresAt = Date().addingTimeInterval(expiryInterval)
             } else {
                 // Create new card
-                let cachedCard = CachedCard.from(cardInfo: cardInfo, expiryInterval: expiryInterval)
+                let cachedCard = CachedCard.from(cardInfo: cardInfo, expiryInterval: expiryInterval, context: context)
                 context.insert(cachedCard)
             }
             
@@ -172,7 +172,7 @@ class CoreDataRepository: CoreDataRepositoryProtocol {
                 existingPricing.expiresAt = Date().addingTimeInterval(expiryInterval)
             } else {
                 // Create new pricing
-                let cachedPricing = CachedPricing.from(pricingData: pricingData, expiryInterval: expiryInterval)
+                let cachedPricing = CachedPricing.from(pricingData: pricingData, expiryInterval: expiryInterval, context: context)
                 context.insert(cachedPricing)
             }
             
@@ -248,10 +248,10 @@ class CoreDataRepository: CoreDataRepositoryProtocol {
     func saveToHistory(_ historyItem: HistoryItem) async throws {
         try await coreDataStack.backgroundContext.perform {
             let context = self.coreDataStack.backgroundContext
-            
-            let scanHistory = ScanHistory.from(historyItem: historyItem)
+
+            let scanHistory = ScanHistory.from(historyItem: historyItem, context: context)
             context.insert(scanHistory)
-            
+
             try context.save()
         }
     }

@@ -7,7 +7,14 @@
 
 import Foundation
 
-class NetworkService {
+protocol NetworkServiceProtocol {
+    func healthCheck() async throws -> HealthResponse
+    func identifyCard(image: Data) async throws -> CardIdentificationResponse
+    func getPricing(cardId: String) async throws -> PricingData
+    func convertCurrency(from: String, to: String, amount: Double) async throws -> CurrencyConversionResponse
+}
+
+class NetworkService: NetworkServiceProtocol {
 
     static let shared = NetworkService()
 
@@ -49,7 +56,7 @@ class NetworkService {
 
     func convertCurrency(from: String, to: String, amount: Double) async throws -> CurrencyConversionResponse {
         let endpoint = "/api/currency/convert"
-        let requestBody = CurrencyConversionRequest(fromCurrency: from, toCurrency: to, amount: amount)
+        let requestBody = CurrencyConversionRequest(from_currency: from, to_currency: to, amount: amount)
         return try await performRequest(endpoint: endpoint, method: .post, body: requestBody)
     }
 

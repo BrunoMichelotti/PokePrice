@@ -14,15 +14,3 @@ struct CardIdentificationResponse: Codable {
     let confidence: Double?
     let imageUrl: String?
 }
-
-struct CardInfo: Codable {
-    let id: String
-    let name: String
-    let setName: String
-    let setCode: String
-    let cardNumber: String
-    let rarity: String
-    let condition: String?
-    let language: String?
-    let imageUrl: String?
-}

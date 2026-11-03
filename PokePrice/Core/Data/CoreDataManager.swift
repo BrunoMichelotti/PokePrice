@@ -45,7 +45,7 @@ class CoreDataManager {
         coreDataStack.backgroundContext.perform { [weak self] in
             guard let self = self else { return }
             let context = self.coreDataStack.backgroundContext
-            let scanHistory = ScanHistory.from(historyItem: historyItem)
+            let scanHistory = ScanHistory.from(historyItem: historyItem, context: context)
             context.insert(scanHistory)
             try? context.save()
         }

@@ -47,6 +47,10 @@ public class CachedCard: NSManagedObject {
         self.expiresAt = Date().addingTimeInterval(expiryInterval)
     }
 
+    static func from(cardInfo: CardInfo, expiryInterval: TimeInterval = 24 * 60 * 60, context: NSManagedObjectContext) -> CachedCard {
+        return CachedCard(context: context, cardInfo: cardInfo, expiryInterval: expiryInterval)!
+    }
+
     func toCardInfo() -> CardInfo {
         return CardInfo(
             id: cardId,

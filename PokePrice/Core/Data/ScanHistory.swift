@@ -27,9 +27,9 @@ public class ScanHistory: NSManagedObject {
         guard let entity = NSEntityDescription.entity(forEntityName: "ScanHistory", in: context) else {
             return nil
         }
-        
+
         self.init(entity: entity, insertInto: context)
-        
+
         self.historyId = historyItem.historyId
         self.cardId = historyItem.cardId
         self.cardName = historyItem.cardName
@@ -40,5 +40,24 @@ public class ScanHistory: NSManagedObject {
         self.eurPrice = historyItem.eurPrice ?? 0.0
         self.scanDate = historyItem.scanDate
         self.imageData = historyItem.imageData
+    }
+
+    static func from(historyItem: HistoryItem, context: NSManagedObjectContext) -> ScanHistory {
+        return ScanHistory(context: context, historyItem: historyItem)!
+    }
+
+    func toHistoryItem() -> HistoryItem {
+        return HistoryItem(
+            historyId: historyId,
+            cardId: cardId,
+            cardName: cardName,
+            setName: setName,
+            setImageUrl: setImageUrl,
+            brlPrice: brlPrice > 0 ? brlPrice : nil,
+            usdPrice: usdPrice > 0 ? usdPrice : nil,
+            eurPrice: eurPrice > 0 ? eurPrice : nil,
+            scanDate: scanDate,
+            imageData: imageData
+        )
     }
 }
