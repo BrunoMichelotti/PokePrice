@@ -1,8 +1,8 @@
 # PokePrice Project Status
 
-**Last Updated:** October 25, 2026
+**Last Updated:** November 3, 2026
 **Project Status:** Active Development
-**Current Phase:** Foundation Setup (Phase 1)
+**Current Phase:** Foundation Setup (Phase 1) - Core Features Started
 
 ---
 
@@ -10,7 +10,7 @@
 
 PokePrice is an iOS application for Pokemon TCG card identification and pricing, focused on the Brazilian market. The project aims to provide users with accurate BRL pricing via LigaPokemon integration, with USD/EUR reference pricing for comparison.
 
-**Current Progress:** Backend infrastructure deployed and operational on Railway, project management workflow established with GitHub Issues, implementation roadmap defined with 11 vertical tickets.
+**Current Progress:** Backend infrastructure deployed and operational on Railway, project management workflow established with GitHub Issues, implementation roadmap defined with 11 vertical tickets. CoreData stack configured, PokeWallet MCP and LigaPokemon integrated, networking layer implemented with URLSession, camera feature completed with NetworkService integration.
 
 ---
 
@@ -24,8 +24,8 @@ PokePrice is an iOS application for Pokemon TCG card identification and pricing,
 
 **Implemented Features:**
 - FastAPI backend with health check endpoint
-- Mock card identification endpoint (POST /api/identify)
-- Mock pricing endpoint (GET /api/pricing/{card_id})
+- PokeWallet MCP integration for card identification (POST /api/identify)
+- LigaPokemon pricing integration via Apify (GET /api/pricing/{card_id})
 - Currency conversion endpoint (POST /api/currency/convert)
 - CORS configuration for iOS app integration
 - Docker-based deployment with Railway
@@ -34,9 +34,9 @@ PokePrice is an iOS application for Pokemon TCG card identification and pricing,
 **API Endpoints:**
 - `GET /` - API information
 - `GET /health` - Health check
-- `POST /api/identify` - Card identification (mock)
-- `GET /api/pricing/{card_id}` - Pricing data (mock)
-- `POST /api/currency/convert` - Currency conversion (mock)
+- `POST /api/identify` - Card identification via PokeWallet MCP
+- `GET /api/pricing/{card_id}` - Pricing data via LigaPokemon
+- `POST /api/currency/convert` - Currency conversion
 
 **Documentation:**
 - Swagger UI: https://pokeprice-production-b0ac.up.railway.app/docs
@@ -76,11 +76,11 @@ The project is broken down into 11 vertical tickets, each representing a complet
 
 | # | Ticket | Status | Blocked By |
 |---|--------|--------|------------|
-| 1 | Finish CoreData Setup and Exercise | Ready | None |
-| 2 | Integrate PokeWallet MCP in Backend | Ready | None |
-| 3 | Integrate LigaPokemon Pricing API | Ready | None |
-| 4 | Set Up Alamofire Networking in iOS App | Ready | None |
-| 5 | Implement Camera Capture in iOS App | Ready | #4 |
+| 1 | Finish CoreData Setup and Exercise | Complete | None |
+| 2 | Integrate PokeWallet MCP in Backend | Complete | None |
+| 3 | Integrate LigaPokemon Pricing API | Complete | None |
+| 4 | Set Up Alamofire Networking in iOS App | Complete | None |
+| 5 | Implement Camera Capture in iOS App | Complete | #4 |
 | 6 | Implement Card Identification Flow in iOS App | Ready | #4, #5 |
 | 7 | Build Results Screen with Card Details | Ready | #6 |
 | 8 | Implement Scan History with CoreData | Ready | #1, #7 |
@@ -91,20 +91,20 @@ The project is broken down into 11 vertical tickets, each representing a complet
 ### Dependency Graph
 
 ```
-Phase 1: Foundation (Ready to Start)
-├── #1: CoreData Setup
-├── #2: PokeWallet MCP Integration
-├── #3: LigaPokemon Pricing API
-├── #4: Alamofire Networking
-├── #9: Banco Central Currency Conversion
-├── #10: Redis Caching
-└── #11: Firebase Analytics
+Phase 1: Foundation (COMPLETE)
+├── #1: CoreData Setup ✅
+├── #2: PokeWallet MCP Integration ✅
+├── #3: LigaPokemon Pricing API ✅
+├── #4: Alamofire Networking ✅
+├── #9: Banco Central Currency Conversion (pending)
+├── #10: Redis Caching (pending)
+└── #11: Firebase Analytics (pending)
 
-Phase 2: Core Features (Requires Foundation)
-├── #5: Camera Capture [blocked by #4]
-└── #6: Card Identification Flow [blocked by #4, #5]
+Phase 2: Core Features (In Progress)
+├── #5: Camera Capture ✅
+└── #6: Card Identification Flow [ready to start]
 
-Phase 3: Polish & UX (Requires Core Features)
+Phase 3: Polish & UX (Pending)
 ├── #7: Results Screen [blocked by #6]
 └── #8: Scan History [blocked by #1, #7]
 ```
@@ -113,51 +113,43 @@ Phase 3: Polish & UX (Requires Core Features)
 
 ## 4. Next Steps
 
-### Tickets Ready to Start Immediately (7 tickets)
+### Completed Tickets (5 tickets)
 
-1. **#1: Finish CoreData Setup and Exercise**
-   - Complete CoreData stack configuration
-   - Create Card model entities
-   - Implement save/fetch operations
-   - Test with simple view controller
+1. ✅ **#1: Finish CoreData Setup and Exercise** - CoreData stack configured with entities and repository
+2. ✅ **#2: Integrate PokeWallet MCP in Backend** - MCP integration with logging and fallback
+3. ✅ **#3: Integrate LigaPokemon Pricing API** - Apify integration with pricing endpoint
+4. ✅ **#4: Set Up Alamofire Networking in iOS App** - URLSession-based NetworkService implemented
+5. ✅ **#5: Implement Camera Capture in iOS App** - AVFoundation camera with NetworkService integration
 
-2. **#2: Integrate PokeWallet MCP in Backend**
-   - Research PokeWallet MCP API
-   - Install and configure MCP client
-   - Replace mock card identification
-   - Implement error handling with fallback
+### Tickets Ready to Start (1 ticket)
 
-3. **#3: Integrate LigaPokemon Pricing API**
-   - Set up Apify client
-   - Configure LigaPokemon actor
-   - Implement price fetching
-   - Add Redis caching (24h expiry)
+1. **#6: Implement Card Identification Flow in iOS App**
+   - Connect camera capture to NetworkService
+   - Handle identification responses
+   - Navigate to results screen
+   - Error handling and retry logic
 
-4. **#4: Set Up Alamofire Networking in iOS App**
-   - Install Alamofire via SPM
-   - Create NetworkService class
-   - Implement request methods
-   - Configure Railway backend URL
+### Pending Foundation Tickets (3 tickets)
 
-5. **#9: Implement Banco Central Currency Conversion**
+1. **#9: Implement Banco Central Currency Conversion**
    - Research BCB API documentation
    - Implement currency conversion endpoint
    - Add caching for exchange rates
    - Implement fallback rates
 
-6. **#10: Implement Redis Caching in Backend**
+2. **#10: Implement Redis Caching in Backend**
    - Set up Redis instance on Railway
    - Install Redis client (redis-py)
    - Implement cache wrappers
    - Configure 24h TTL
 
-7. **#11: Set Up Firebase Analytics and Crash Reporting**
+3. **#11: Set Up Firebase Analytics and Crash Reporting**
    - Set up Firebase project
    - Add Firebase SDK via SPM
    - Configure Crashlytics and Analytics
    - Add event tracking
 
-**Recommended Priority:** Start with #4 (Alamofire) and #1 (CoreData) to establish iOS foundation, then #2 and #3 for backend integrations.
+**Recommended Priority:** Continue with #6 (Card Identification Flow) to complete the core camera-to-results flow, then proceed with #7 (Results Screen) for the UI polish.
 
 ---
 
@@ -319,6 +311,16 @@ PokePrice is a mobile application designed for Pokemon TCG collectors in Brazil,
 ---
 
 ## 9. Recent Updates
+
+### November 3, 2026
+
+- ✅ Completed CoreData setup with entities and repository
+- ✅ Integrated PokeWallet MCP in backend with logging and fallback
+- ✅ Integrated LigaPokemon pricing via Apify
+- ✅ Implemented NetworkService with URLSession (replaced Alamofire requirement)
+- ✅ Completed camera feature with AVFoundation and NetworkService integration
+- ✅ Fixed iOS build errors and added model conversions
+- ✅ Build succeeds for iOS Simulator
 
 ### October 25, 2026
 
